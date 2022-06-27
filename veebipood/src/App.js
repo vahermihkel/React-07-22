@@ -8,9 +8,7 @@ function App() {
     <div className="App">
       <button className="nupp">Vajuta mind</button>
       <img className="pilt" src="https://cdn.motor1.com/images/mgl/PRXz4/s1/nobe-100-three-wheeled-electric-vehicle.jpg" alt="" />
-      <Link to="/avaleht">
-        <button>Avalehele</button>
-      </Link>
+      
       <Link to="/ostukorv">
         <button>Ostukorvi</button>
       </Link>
