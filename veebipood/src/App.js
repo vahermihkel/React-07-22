@@ -4,6 +4,7 @@ import Avaleht from './pages/Avaleht';
 import LisaToode from './pages/LisaToode';
 import Ostukorv from './pages/Ostukorv';
 import Poed from './pages/Poed';
+import YksikToode from './pages/YksikToode';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route path="ostukorv" exact element={ <Ostukorv /> } />
         <Route path="lisa-toode" exact element={ <LisaToode /> } />
         <Route path="poed" exact element={ <Poed /> } />
+        <Route path="toode/:nimi" exact element={ <YksikToode /> } />
       </Routes>
     </div>
   );

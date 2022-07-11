@@ -3,6 +3,8 @@ import { useRef, useState } from "react";
 function LisaToode() {
   // kõik ref-d lähevad input külge
   const nimiRef = useRef();
+  const hindRef = useRef();
+  const aktiivneRef = useRef();
   // useRef --> lugeda inputi väärtust
   // useState --> näidata error / edukat sõnumit
   const [s6num, m22raS6num] = useState("");
@@ -26,9 +28,9 @@ function LisaToode() {
       //         JSON.parse("["Nobe"]")   ->    ["Nobe"]
       // tooted = ["Nobe"]
       tooted = JSON.parse(tooted) || [];
-      // [].push("Nobe")   ---> ["Nobe"]
-      // ["Nobe"].push("Tesla")  ---> ["Nobe", "Tesla"]
-      tooted.push(nimiRef.current.value);
+      // [].push({nimi: "Nobe", hind: 23132, aktiivne: false})   ---> [{nimi: "Nobe", hind: 23132, aktiivne: false}]
+      // [{nimi: "Nobe",...}].push({nimi: "Tesla", hind: 312312, aktiivne: true})  ---> [{nimi: "Nobe", hind: 23132, aktiivne: false}, {nimi: "Tesla", hind: 312312, aktiivne: true}]
+      tooted.push({nimi: nimiRef.current.value, hind: hindRef.current.value, aktiivne: aktiivneRef.current.checked});
       //   tooted  =       "["Nobe"]"
       //   tooted  =       "["Nobe", "Tesla"]"
       tooted = JSON.stringify(tooted);
@@ -66,6 +68,10 @@ function LisaToode() {
     <br /> <br />
     <label>Toote nimi</label> <br />
     <input ref={nimiRef} type="text" /> <br />
+    <label>Toote hind</label> <br />
+    <input ref={hindRef} type="number" /> <br />
+    <label>Toote aktiivsus</label> <br />
+    <input ref={aktiivneRef} type="checkbox" /> <br />
     <button onClick={() => sisestaToode()}>Sisesta</button>
     <div>{s6num}</div>
   </div> 
