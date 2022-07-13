@@ -53,6 +53,7 @@ function Avaleht() {
     <button onClick={() => muudaKeeltKoosSalvestusega('EE')}>EE</button>
     <button onClick={() => muudaKeeltKoosSalvestusega('EN')}>EN</button>
     <button onClick={() => muudaKeeltKoosSalvestusega('RU')}>RU</button>
+    {/* [{1},{2},{3}] */}
     <div>{tooted.map((element, index) => 
       <div key={index}>
         {/* <Link to={`/toode/${element.nimi}`}></Link> */}
