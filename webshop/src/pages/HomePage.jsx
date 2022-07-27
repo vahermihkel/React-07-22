@@ -46,6 +46,46 @@ function HomePage() {
     setSelectedCategory(categoryClicked);
   }
 
+  //  {product: {id,name,category}, quantity: 1}
+                     // {id: 1, nimi: "Tesla"}
+  const addToCart = (productClicked) => {
+    // cart = null;
+    // cart = "[{product: {id: 1, nimi: "Tesla"}, quantity: 1}]"
+    let cart = sessionStorage.getItem("cart");
+    // cart = [];
+    // cart = [{product: {id: 1, nimi: "Tesla"}, quantity: 1}]
+    cart = JSON.parse(cart) || [];
+    // [].push(productClicked);   sort/filter/map/push/splice/indexOf/find
+    // index = -1
+    //            [{product: {id: 1, nimi: "Tesla"}, quantity: 1}].findIndex()
+    //                .findIndex({product: {id: 1, nimi: "Tesla"}, quantity: 1} => element.product.id === {id: 1, nimi: "Tesla"})
+    //                .findIndex({product: {id: 1, nimi: "Tesla"}, quantity: 1} => 1 === 1)
+    // index = 0;
+    const index = cart.findIndex(element => element.product.id === productClicked.id);
+    if (index >= 0) {
+      // suurendan kogust
+      // ["ant", "bison", "camel"][1] = "bird";
+      // ["ant", "bird", "camel"];
+      // [{n:"1"},{n:"2"},{n:"3"}][2].n = "4";
+
+    //[{product: {id: 1, nimi: "Tesla"}, quantity: 1}][0].quantity = 1 + 1;
+      cart[index].quantity = cart[index].quantity + 1;
+      // cart[index].quantity += 1;
+      // cart[index].quantity++;
+    } else {
+          // pushi sisse kirjutama, mida lisan lõppu
+      // [].push({product: {id: 1, nimi: "Tesla"}, quantity: 1})
+      cart.push({product: productClicked, quantity: 1});
+    }
+    // "[{product: {id: 1, nimi: "Tesla"}, quantity: 1}]"
+    // "[{product: {id: 1, nimi: "Tesla"}, quantity: 2}]"
+    cart = JSON.stringify(cart);
+    //   key       |      value
+    //   cart      |    [{product: {id: 1, nimi: "Tesla"}, quantity: 1}]
+    //   cart      |    [{product: {id: 1, nimi: "Tesla"}, quantity: 2}]
+    sessionStorage.setItem("cart",cart);
+  }
+
   // ternary operator
   // true/false ? true-blokk : false-blokk
   return ( 
@@ -79,7 +119,7 @@ function HomePage() {
         <div>{element.name}</div>
         <div>{element.price}</div>
         {/* punane: variant="danger" kollane: variant="warning"  hall: variant="secondary" */}
-        <Button variant="success">Lisa ostukorvi</Button>
+        <Button variant="success" onClick={() => addToCart(element)}>Lisa ostukorvi</Button>
       </div>)}
   </div> );
 }
