@@ -1,18 +1,31 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
-import productsFromFile from '../products.json';
+// import productsFromFile from '../products.json';
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 
 function HomePage() {
-  const [products, setProducts] = useState(productsFromFile);
+  // käitub nagu productsFromFile (koguaeg on originaalsed tooted sees)
+  const [databaseProducts, setDatabaseProducts] = useState([]); 
+  // on koguaeg muutuvas seisundis (filtreeritakse / sorteeritakse)
+  const [products, setProducts] = useState([]); 
                 // tagastab --- returns
-  const categories = [...new Set(productsFromFile.map(element => element.category))];
+  const categories = [...new Set(databaseProducts.map(element => element.category))];
   const [selectedCategory, setSelectedCategory] = useState("all");
-
+  const productsDb = "https://react722-default-rtdb.europe-west1.firebasedatabase.app/products.json";
   // [].map( => uus_väärtus)   [{n:"1"},{n:"2"},{n:"3"}]  -->   ["1","2","3"]      .length jääb alati samaks
   // [].sort( => pluss / miinus )   [{n:"1"},{n:"2"},{n:"3"}] --> [{n:"3"},{n:"2"},{n:"1"}]
   // [].filter( => TRUE / FALSE )   [{n:"1"},{n:"2"},{n:"3"}] --> [{n:"2"},{n:"3"}]
+
+  // uef
+  useEffect(() => { // <--- see funktsioon läheb käima lehele tulles
+    fetch(productsDb)
+    .then(res => res.json())
+    .then(data => {
+      setProducts(data);
+      setDatabaseProducts(data);
+    }); // <--- pannakse kõik andmebaasitooted set abil products muutuja sisse
+  }, []);
 
   // sort
   const sortAZ = () => {
@@ -38,9 +51,9 @@ function HomePage() {
 
   const filterByCategory = (categoryClicked) => {
     if (categoryClicked === 'all') {
-      setProducts(productsFromFile);
+      setProducts(databaseProducts);
     } else {
-      const result = productsFromFile.filter(element => element.category === categoryClicked);
+      const result = databaseProducts.filter(element => element.category === categoryClicked);
       setProducts(result);
     }
     setSelectedCategory(categoryClicked);

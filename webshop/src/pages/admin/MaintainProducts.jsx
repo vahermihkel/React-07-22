@@ -3,22 +3,40 @@
 //2. faili - logide (salvestatakse kasutaja iga klikk ja andmesisestus)
 //3. andmebaas - kasutajad, tooted, tellimused, kategooriad, administraatorid, poed
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react"; // <--------
 import { Link } from "react-router-dom";
-import productsFromFile from "../../products.json";
+// import productsFromFile from "../../products.json"; // <----- kadus
 
 function MaintainProducts() {
-  const [products, setProducts] = useState(productsFromFile);
+  // const [products, setProducts] = useState(productsFromFile); <--- kadus
+  // käitub nagu productsFromFile (koguaeg on originaalsed tooted sees)
+  const [databaseProducts, setDatabaseProducts] = useState([]);  // <---
+  // on koguaeg muutuvas seisundis (filtreeritakse / sorteeritakse)
+  const [products, setProducts] = useState([]); // <---
+  const productsDb = "https://react722-default-rtdb.europe-west1.firebasedatabase.app/products.json";
+  // <----
+
   const searchedRef = useRef();
+
+   // uef
+   useEffect(() => { // <---------------
+    fetch(productsDb)
+    .then(res => res.json())
+    .then(data => {
+      setProducts(data);
+      setDatabaseProducts(data);
+    }); // <--- pannakse kõik andmebaasitooted set abil products muutuja sisse
+  }, []); // <------------------
 
   const deleteProduct = (index) => {
     products.splice(index,1);
     setProducts(products.slice());
+    // KUSTUTAMINE PEAKS KÄIMA API PÄRINGU KAUDU
   }
 
   // "Elas metsas mutionu".indexOf("metsast")  --> 5   -1
   const searchProducts = () => {
-    const result = productsFromFile.filter(element => 
+    const result = databaseProducts.filter(element =>   // <-------
       element.name.toLowerCase().indexOf(searchedRef.current.value.toLowerCase()) >= 0);
     setProducts(result);
   }

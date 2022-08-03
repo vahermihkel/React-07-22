@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import productsFromFile from "../../products.json";
 import categoriesFromFile from "../../categories.json";
 
@@ -10,6 +10,7 @@ function AddProduct() {
   const categoryRef = useRef();
   const imageRef = useRef();
   const activeRef = useRef();
+  const [idUnique, setIdUnique] = useState(true);
 
   const add = () => {
     const newProduct = {
@@ -22,12 +23,30 @@ function AddProduct() {
       active: activeRef.current.checked
     }
     productsFromFile.push(newProduct);
+    // LISAMINE PEAKS KÄIMA API PÄRINGU KAUDU
+  }
+
+
+  const checkIdUniqueness = () => {
+    //const ELEMENT = [].find(element => TRUE)
+    //const JÄRJEKORRANUMBER = [].findIndex(element => TRUE)
+                                                  //      29853242 === 29853242
+    const index = productsFromFile.findIndex(element => Number(element.id) === Number(idRef.current.value));
+    if (index === -1) {
+      // console.log("unikaalne");
+      setIdUnique(true);
+    } else {
+      // console.log("mitteunikaalne");
+      setIdUnique(false);
+    }
   }
 
   return ( 
     <div>
+      {/* { !idUnique && <div>Sisestasid mitteunikaalse ID!</div>} */}
+      { idUnique === false && <div>Sisestasid mitteunikaalse ID!</div>}
       <label>ID</label> <br />
-      <input ref={idRef} type="number" /> <br />
+      <input onChange={checkIdUniqueness} ref={idRef} type="number" /> <br />
       <label>Nimi</label> <br />
       <input ref={nameRef} type="text" /> <br />
       <label>Hind</label> <br />
@@ -43,7 +62,7 @@ function AddProduct() {
       <input ref={imageRef} type="text" /> <br />
       <label>Aktiivne</label> <br />
       <input ref={activeRef} type="checkbox" /> <br />
-      <button onClick={add}>Muuda</button>
+      <button disabled={idUnique === false} onClick={add}>Muuda</button>
     </div> );
 }
 
