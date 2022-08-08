@@ -30,8 +30,15 @@ function MaintainProducts() {
 
   const deleteProduct = (index) => {
     products.splice(index,1);
-    setProducts(products.slice());
+    setProducts(products.slice()); // HTML muutmiseks
     // KUSTUTAMINE PEAKS KÄIMA API PÄRINGU KAUDU
+    fetch(productsDb,{ // andmebaasis muutmiseks
+      method: "PUT", // pannakse midagi sinna API otspunktile
+      body: JSON.stringify(products), // mida pannakse
+      headers: { // mis kujul andmed pannakse
+        "Content-Type": "application/json"
+      }
+    })
   }
 
   // "Elas metsas mutionu".indexOf("metsast")  --> 5   -1

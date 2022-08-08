@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"; // <------------------
 import { useNavigate, useParams } from "react-router-dom";
 // import productsFromFile from "../../products.json";
-import categoriesFromFile from "../../categories.json";
+// import categoriesFromFile from "../../categories.json";
 
 function EditProduct() {
   // const params = useParams()       params.id;    params.category
@@ -24,15 +24,19 @@ function EditProduct() {
   const [idUnique, setIdUnique] = useState(true); 
   const productsDb = "https://react722-default-rtdb.europe-west1.firebasedatabase.app/products.json";
 
+  const [categories, setCategories] = useState([]);
+  const categoriesDb = "https://react722-default-rtdb.europe-west1.firebasedatabase.app/categories.json";
+
    // uef
-   useEffect(() => { // <---------------   import!
+   useEffect(() => { 
     fetch(productsDb)
     .then(res => res.json())
-    .then(data => {
-      setProducts(data);
-      // setDatabaseProducts(data); <============  võtan ära
-    }); // <--- pannakse kõik andmebaasitooted set abil products muutuja sisse
-  }, []); // <------------------
+    .then(data => setProducts(data)); 
+
+    fetch(categoriesDb)
+    .then(res => res.json())
+    .then(data => setCategories(data)); 
+  }, []);
 
   const edit = () => {
     // [{1},{2}][1] = {UUS};
@@ -45,9 +49,15 @@ function EditProduct() {
       image: imageRef.current.value,
       active: activeRef.current.checked
     };
-    navigate("/admin/halda-tooteid");
     // console.log(index);
     // MUUTMINE PEAKS KÄIMA API PÄRINGU KAUDU
+    fetch(productsDb,{
+      method: "PUT", // pannakse midagi sinna API otspunktile
+      body: JSON.stringify(products), // mida pannakse
+      headers: { // mis kujul andmed pannakse
+        "Content-Type": "application/json"
+      }
+    }).then(() => navigate("/admin/halda-tooteid"))
   }
 
   const checkIdUniqueness = () => {   
@@ -80,7 +90,7 @@ function EditProduct() {
         <label>Kategooria</label> <br />
         {/* <input ref={categoryRef} defaultValue={product.category} type="text" /> <br /> */}
         <select ref={categoryRef} defaultValue={product.category}>
-          {categoriesFromFile.map(element => <option key={element.name}>{element.name}</option>)}
+          {categories.map(element => <option key={element.id + element.name}>{element.name}</option>)}
         </select> <br />
         <label>Pilt</label> <br />
         <input ref={imageRef} defaultValue={product.image} type="text" /> <br />

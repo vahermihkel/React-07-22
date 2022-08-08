@@ -19,8 +19,8 @@ function HomePage() {
 
   // uef
   useEffect(() => { // <--- see funktsioon läheb käima lehele tulles
-    fetch(productsDb)
-    .then(res => res.json())
+    fetch(productsDb) // fetch on alati asünkroonne (ütleb koodile, et mine edasi)
+    .then(res => res.json()) // staatuskoodi - 200 / 404
     .then(data => {
       setProducts(data);
       setDatabaseProducts(data);

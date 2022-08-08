@@ -1,6 +1,6 @@
-import { useRef, useState } from "react";
-import productsFromFile from "../../products.json";
-import categoriesFromFile from "../../categories.json";
+import { useEffect, useRef, useState } from "react"; // <----- Reacti HOOK
+// import productsFromFile from "../../products.json";
+// import categoriesFromFile from "../../categories.json";
 
 function AddProduct() {
   const idRef = useRef();
@@ -11,6 +11,22 @@ function AddProduct() {
   const imageRef = useRef();
   const activeRef = useRef();
   const [idUnique, setIdUnique] = useState(true);
+  const productsDb = "https://react722-default-rtdb.europe-west1.firebasedatabase.app/products.json";
+  // <-------
+  const [products, setProducts] = useState([]); // <----
+
+  const [categories, setCategories] = useState([]);
+  const categoriesDb = "https://react722-default-rtdb.europe-west1.firebasedatabase.app/categories.json";
+
+  useEffect(() => {  // <-------
+    fetch(productsDb)
+    .then(res => res.json())
+    .then(data => setProducts(data)); 
+
+    fetch(categoriesDb)
+    .then(res => res.json())
+    .then(data => setCategories(data)); 
+  }, []);
 
   const add = () => {
     const newProduct = {
@@ -22,8 +38,16 @@ function AddProduct() {
       image: imageRef.current.value,
       active: activeRef.current.checked
     }
-    productsFromFile.push(newProduct);
+    products.push(newProduct); // <---- 1)
     // LISAMINE PEAKS KÄIMA API PÄRINGU KAUDU
+    // PUT / POST ---> saavad rakendused (localhost:3000) ja POSTMAN
+    fetch(productsDb,{
+      method: "PUT", // pannakse midagi sinna API otspunktile
+      body: JSON.stringify(products), // mida pannakse
+      headers: { // mis kujul andmed pannakse
+        "Content-Type": "application/json"
+      }
+    })
   }
 
 
@@ -31,7 +55,8 @@ function AddProduct() {
     //const ELEMENT = [].find(element => TRUE)
     //const JÄRJEKORRANUMBER = [].findIndex(element => TRUE)
                                                   //      29853242 === 29853242
-    const index = productsFromFile.findIndex(element => Number(element.id) === Number(idRef.current.value));
+                // <--- 2)
+    const index = products.findIndex(element => Number(element.id) === Number(idRef.current.value));
     if (index === -1) {
       // console.log("unikaalne");
       setIdUnique(true);
@@ -56,13 +81,13 @@ function AddProduct() {
       <label>Kategooria</label> <br />
       {/* <input ref={categoryRef} type="text" /> <br /> */}
       <select ref={categoryRef}>
-        {categoriesFromFile.map(element => <option>{element.name}</option>)}
+        {categories.map(element => <option key={element.id + element.name}>{element.name}</option>)}
       </select> <br />
       <label>Pilt</label> <br />
       <input ref={imageRef} type="text" /> <br />
       <label>Aktiivne</label> <br />
       <input ref={activeRef} type="checkbox" /> <br />
-      <button disabled={idUnique === false} onClick={add}>Muuda</button>
+      <button disabled={idUnique === false} onClick={add}>Lisa</button>
     </div> );
 }
 
