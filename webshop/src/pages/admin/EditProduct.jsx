@@ -41,9 +41,9 @@ function EditProduct() {
   const edit = () => {
     // [{1},{2}][1] = {UUS};
     products[index] = {
-      id: idRef.current.value,
+      id: Number(idRef.current.value),
       name: nameRef.current.value,
-      price: priceRef.current.value,
+      price: Number(priceRef.current.value),
       description: descriptionRef.current.value,
       category: categoryRef.current.value,
       image: imageRef.current.value,

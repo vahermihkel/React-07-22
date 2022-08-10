@@ -3,35 +3,32 @@
 //2. faili - logide (salvestatakse kasutaja iga klikk ja andmesisestus)
 //3. andmebaas - kasutajad, tooted, tellimused, kategooriad, administraatorid, poed
 
-import { useEffect, useRef, useState } from "react"; // <--------
+import { useEffect, useRef, useState } from "react"; 
 import { Link } from "react-router-dom";
-// import productsFromFile from "../../products.json"; // <----- kadus
+import { ToastContainer, toast } from 'react-toastify';
 
 function MaintainProducts() {
-  // const [products, setProducts] = useState(productsFromFile); <--- kadus
   // käitub nagu productsFromFile (koguaeg on originaalsed tooted sees)
-  const [databaseProducts, setDatabaseProducts] = useState([]);  // <---
+  const [databaseProducts, setDatabaseProducts] = useState([]);  
   // on koguaeg muutuvas seisundis (filtreeritakse / sorteeritakse)
-  const [products, setProducts] = useState([]); // <---
+  const [products, setProducts] = useState([]); 
   const productsDb = "https://react722-default-rtdb.europe-west1.firebasedatabase.app/products.json";
-  // <----
 
   const searchedRef = useRef();
 
    // uef
-   useEffect(() => { // <---------------
+   useEffect(() => { 
     fetch(productsDb)
     .then(res => res.json())
     .then(data => {
       setProducts(data);
       setDatabaseProducts(data);
-    }); // <--- pannakse kõik andmebaasitooted set abil products muutuja sisse
-  }, []); // <------------------
+    }); 
+  }, []); 
 
   const deleteProduct = (index) => {
     products.splice(index,1);
     setProducts(products.slice()); // HTML muutmiseks
-    // KUSTUTAMINE PEAKS KÄIMA API PÄRINGU KAUDU
     fetch(productsDb,{ // andmebaasis muutmiseks
       method: "PUT", // pannakse midagi sinna API otspunktile
       body: JSON.stringify(products), // mida pannakse
@@ -39,6 +36,12 @@ function MaintainProducts() {
         "Content-Type": "application/json"
       }
     })
+    // ilus oleks .then() sees setProducts teha ja toast teha (kui backend on maas)
+    toast.error('Edukalt kustutatud!', {
+      position: "bottom-right",
+      autoClose: 3000,
+      theme: "dark"
+      });
   }
 
   // "Elas metsas mutionu".indexOf("metsast")  --> 5   -1
@@ -50,6 +53,7 @@ function MaintainProducts() {
 
   return ( 
   <div>
+    <ToastContainer />
     <input onChange={searchProducts} ref={searchedRef} type="text" />
     <span>{products.length} tk</span>
     {products.map( (element, index) => 
