@@ -1,7 +1,5 @@
-import { useEffect, useRef, useState } from "react"; // <------------------
+import { useEffect, useRef, useState } from "react"; 
 import { useNavigate, useParams } from "react-router-dom";
-// import productsFromFile from "../../products.json";
-// import categoriesFromFile from "../../categories.json";
 
 function EditProduct() {
   // const params = useParams()       params.id;    params.category
@@ -17,9 +15,9 @@ function EditProduct() {
   const navigate = useNavigate();
   // "25369546" === 25369546
   // const product = productsFromFile.find(element => Number(element.id) === Number(id));
-  const [products, setProducts] = useState([]); // <====== Cannot access 'products' before initialization
-  const index = products.findIndex(element => Number(element.id) === Number(id)); // <===========
-  const product = products[index]; // <===========
+  const [products, setProducts] = useState([]); // Cannot access 'products' before initialization
+  const index = products.findIndex(element => Number(element.id) === Number(id));
+  const product = products[index]; 
   console.log(product);
   const [idUnique, setIdUnique] = useState(true); 
   const productsDb = "https://react722-default-rtdb.europe-west1.firebasedatabase.app/products.json";
@@ -31,11 +29,11 @@ function EditProduct() {
    useEffect(() => { 
     fetch(productsDb)
     .then(res => res.json())
-    .then(data => setProducts(data)); 
+    .then(data => setProducts(data || [])); 
 
     fetch(categoriesDb)
     .then(res => res.json())
-    .then(data => setCategories(data)); 
+    .then(data => setCategories(data || [])); 
   }, []);
 
   const edit = () => {

@@ -1,6 +1,4 @@
-import { useEffect, useRef, useState } from "react"; // <----- Reacti HOOK
-// import productsFromFile from "../../products.json";
-// import categoriesFromFile from "../../categories.json";
+import { useEffect, useRef, useState } from "react";
 
 function AddProduct() {
   const idRef = useRef();
@@ -12,20 +10,19 @@ function AddProduct() {
   const activeRef = useRef();
   const [idUnique, setIdUnique] = useState(true);
   const productsDb = "https://react722-default-rtdb.europe-west1.firebasedatabase.app/products.json";
-  // <-------
-  const [products, setProducts] = useState([]); // <----
+  const [products, setProducts] = useState([]);
 
   const [categories, setCategories] = useState([]);
   const categoriesDb = "https://react722-default-rtdb.europe-west1.firebasedatabase.app/categories.json";
 
-  useEffect(() => {  // <-------
+  useEffect(() => {
     fetch(productsDb)
     .then(res => res.json())
-    .then(data => setProducts(data)); 
+    .then(data => setProducts(data || [])); 
 
     fetch(categoriesDb)
     .then(res => res.json())
-    .then(data => setCategories(data)); 
+    .then(data => setCategories(data || [])); 
   }, []);
 
   const add = () => {
@@ -38,7 +35,7 @@ function AddProduct() {
       image: imageRef.current.value,
       active: activeRef.current.checked
     }
-    products.push(newProduct); // <---- 1)
+    products.push(newProduct);
     // LISAMINE PEAKS KÄIMA API PÄRINGU KAUDU
     // PUT / POST ---> saavad rakendused (localhost:3000) ja POSTMAN
     fetch(productsDb,{
@@ -55,7 +52,6 @@ function AddProduct() {
     //const ELEMENT = [].find(element => TRUE)
     //const JÄRJEKORRANUMBER = [].findIndex(element => TRUE)
                                                   //      29853242 === 29853242
-                // <--- 2)
     const index = products.findIndex(element => Number(element.id) === Number(idRef.current.value));
     if (index === -1) {
       // console.log("unikaalne");

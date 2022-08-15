@@ -4,6 +4,7 @@ import { Button } from 'react-bootstrap';
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import { ToastContainer, toast } from 'react-toastify';
+import Spinner from '../components/Spinner';
 
 function HomePage() {
   // käitub nagu productsFromFile (koguaeg on originaalsed tooted sees)
@@ -14,17 +15,21 @@ function HomePage() {
   const categories = [...new Set(databaseProducts.map(element => element.category))];
   const [selectedCategory, setSelectedCategory] = useState("all");
   const productsDb = "https://react722-default-rtdb.europe-west1.firebasedatabase.app/products.json";
+  const [isLoading, setLoading] = useState(false);
   // [].map( => uus_väärtus)   [{n:"1"},{n:"2"},{n:"3"}]  -->   ["1","2","3"]      .length jääb alati samaks
   // [].sort( => pluss / miinus )   [{n:"1"},{n:"2"},{n:"3"}] --> [{n:"3"},{n:"2"},{n:"1"}]
   // [].filter( => TRUE / FALSE )   [{n:"1"},{n:"2"},{n:"3"}] --> [{n:"2"},{n:"3"}]
 
   // uef
   useEffect(() => { // <--- see funktsioon läheb käima lehele tulles
+    setLoading(true);
     fetch(productsDb) // fetch on alati asünkroonne (ütleb koodile, et mine edasi)
     .then(res => res.json()) // staatuskoodi - 200 / 404
     .then(data => {
-      setProducts(data);
-      setDatabaseProducts(data);
+      data = data.filter(element => element.active === true);
+      setProducts(data || []);
+      setDatabaseProducts(data || []);
+      setLoading(false);
     }); // <--- pannakse kõik andmebaasitooted set abil products muutuja sisse
   }, []);
 
@@ -110,6 +115,7 @@ function HomePage() {
   return ( 
   <div>
     <ToastContainer />
+    {isLoading === true && <Spinner />}
     <div 
       className={selectedCategory === 'all' ? 'active-category' : undefined} 
       onClick={() => filterByCategory('all')}>
