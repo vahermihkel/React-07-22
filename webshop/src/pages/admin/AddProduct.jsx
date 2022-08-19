@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function AddProduct() {
   const idRef = useRef();
@@ -14,6 +15,7 @@ function AddProduct() {
 
   const [categories, setCategories] = useState([]);
   const categoriesDb = "https://react722-default-rtdb.europe-west1.firebasedatabase.app/categories.json";
+  const navigate = useNavigate(); // <- import kui vaadate varasemaid tutoriale, siis võite näha useHistory   .push()
 
   useEffect(() => {
     fetch(productsDb)
@@ -22,18 +24,58 @@ function AddProduct() {
 
     fetch(categoriesDb)
     .then(res => res.json())
+                        // || <- kui on vasakul poolt tühjus (null), võta parem pool
     .then(data => setCategories(data || [])); 
   }, []);
 
+  const [message, setMessage] = useState("");
+  //const [idMessage, setIdMessage] = useState("");
+  //const [nameMessage, setNameMessage] = useState("");
+  //const [descriptionMessage, setDescriptionMessage] = useState("");
+
   const add = () => {
+    // kui vasakul pool on väär (false), võta parem pool
+    
+    // koodi efektiivsuse mõttes, 
+    // võiks panna vasakule poole kõik suurema tõenäosusega true olev või kõige lihtsamini leitav true
+    // if (idRef.current.value === "" || nameRef.current.value === "" || descriptionRef.current.value === "") {
+    //   setMessage("Nõutud väljad on täitmata");
+    //   return;                           // return lõpetab funktsiooni
+    // }                                    // cart.jsx sees pani numbri HTMLi sisse
+    if (idRef.current.value === "") {
+      setMessage("ID on täitmata");   // setIdMessage("Id on täitmata")
+      return;                         // korjake kõik returnid ära
+    }  
+    if (nameRef.current.value === "") {
+      setMessage("Nimi on täitmata"); // setNameMessage("Nimi on täitmata")
+      return;                         // korjake kõik returnid ära
+    }  
+    if (priceRef.current.value === "") {
+      setMessage("Hind on täitmata"); // setPriceMessage("Nimi on täitmata")
+      return;                         // korjake kõik returnid ära
+    }  
+    if (descriptionRef.current.value === "") {
+      setMessage("Kirjeldus on täitmata"); // setDescriptionMessage("Kirjeldus on täitmata")
+      return;                              // korjake kõik returnid ära
+    }  
+    if (imageRef.current.value === "") {
+      setMessage("Pildi aadress on täitmata"); // setImageMessage("Kirjeldus on täitmata")
+      return;                              // korjake kõik returnid ära
+    }  
+
+    //        true
+    // if (!(idRef.current.value === "" || nameRef.current.value === "" || descriptionRef.current.value === "")) {
+    //     //  alumine kood siia sisse
+    // } 
+
     const newProduct = {
-      id: Number(idRef.current.value),
-      name: nameRef.current.value,
-      price: Number(priceRef.current.value),
-      description: descriptionRef.current.value,
-      category: categoryRef.current.value,
-      image: imageRef.current.value,
-      active: activeRef.current.checked
+      id: Number(idRef.current.value), // 0
+      name: nameRef.current.value,   // ""
+      price: Number(priceRef.current.value), // 0
+      description: descriptionRef.current.value, // ""
+      category: categoryRef.current.value, // gold
+      image: imageRef.current.value, // ""
+      active: activeRef.current.checked // 0
     }
     products.push(newProduct);
     // LISAMINE PEAKS KÄIMA API PÄRINGU KAUDU
@@ -44,7 +86,7 @@ function AddProduct() {
       headers: { // mis kujul andmed pannakse
         "Content-Type": "application/json"
       }
-    })
+    }).then(() => navigate("/admin/halda-tooteid"))
   }
 
 
@@ -65,6 +107,9 @@ function AddProduct() {
   return ( 
     <div>
       {/* { !idUnique && <div>Sisestasid mitteunikaalse ID!</div>} */}
+      <div>{message}</div>
+      {/* <div>{idMessage}</div>
+      <div>{nameMessage}</div> */}
       { idUnique === false && <div>Sisestasid mitteunikaalse ID!</div>}
       <label>ID</label> <br />
       <input onChange={checkIdUniqueness} ref={idRef} type="number" /> <br />

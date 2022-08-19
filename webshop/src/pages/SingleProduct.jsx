@@ -34,3 +34,9 @@ function SingleProduct() {
 }
 
 export default SingleProduct;
+
+
+// Iseseisev projekt
+// 1. Tehakse enda väljamõeldud veebileht (enda portfoolio, enda veebipoe, WRC API otspunktide)
+// 2. Webshopi edasiarendus
+// 3. Youtube/Udemy-st mingi Tutoriali järgi
