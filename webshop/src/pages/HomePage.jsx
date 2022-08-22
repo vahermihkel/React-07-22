@@ -2,16 +2,17 @@ import { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 // import productsFromFile from '../products.json';
 import Carousel from 'react-bootstrap/Carousel';
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
+import Pagination from 'react-bootstrap/Pagination';
 import { ToastContainer, toast } from 'react-toastify';
+import SortDropdown from '../components/home/SortDropdown';
 import Spinner from '../components/Spinner';
 
 function HomePage() {
   // käitub nagu productsFromFile (koguaeg on originaalsed tooted sees)
-  const [databaseProducts, setDatabaseProducts] = useState([]); 
+  const [databaseProducts, setDatabaseProducts] = useState([]);  // 463
   // on koguaeg muutuvas seisundis (filtreeritakse / sorteeritakse)
-  const [products, setProducts] = useState([]); 
+  const [filteredProducts, setFilteredProducts] = useState([]); // 250 / 220 / 1 / 5 / 10
+  const [products, setProducts] = useState([]); // 20 20 20 20 20 20 20 20 20 20 3
                 // tagastab --- returns
   const categories = [...new Set(databaseProducts.map(element => element.category))];
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -28,41 +29,38 @@ function HomePage() {
     .then(res => res.json()) // staatuskoodi - 200 / 404
     .then(data => {
       data = data.filter(element => element.active === true);
-      setProducts(data || []);
+      setProducts(data.slice(0,20) || []);
+      setFilteredProducts(data || []);
       setDatabaseProducts(data || []);
       setLoading(false);
     }); // <--- pannakse kõik andmebaasitooted set abil products muutuja sisse
   }, []);
 
+  const [activePage,setActivePage] = useState(1);
+  let pages = [];
+  for (let number = 1; number < filteredProducts.length/20+1; number++) {
+    pages.push(number);
+  }
+  // for (let number = 1; number <= databaseProducts.length; number++) {
+  //   if (number % 20 === 0) {
+  //     pages.push(number);
+  //   }
+  // }
+  // items = [1,2,3,4,5]
+
   // sort
-  const sortAZ = () => {
-    // muteerib --- mutates
-    const result = [...products].sort((a,b)=> a.name.localeCompare(b.name));
-    setProducts(result);
-  }
-
-  const sortZA = () => {
-    const result = [...products].sort((a,b)=> b.name.localeCompare(a.name));
-    setProducts(result);
-  }
-
-  const sortPriceAsc = () => {
-    const result = [...products].sort((a,b)=> a.price - b.price);
-    setProducts(result);
-  }
-
-  const sortPriceDesc = () => {
-    const result = [...products].sort((a,b)=> b.price - a.price);
-    setProducts(result);
-  }
+  
 
   const filterByCategory = (categoryClicked) => {
     if (categoryClicked === 'all') {
-      setProducts(databaseProducts);
+      setProducts(databaseProducts.slice(0,20));
+      setFilteredProducts(databaseProducts);
     } else {
       const result = databaseProducts.filter(element => element.category === categoryClicked);
-      setProducts(result);
+      setProducts(result.slice(0,20));
+      setFilteredProducts(result);
     }
+    setActivePage(1);
     setSelectedCategory(categoryClicked);
   }
 
@@ -126,9 +124,16 @@ function HomePage() {
 
   // ternary operator
   // true/false ? true-blokk : false-blokk
+  const changePage = (number) => {
+    setActivePage(number);
+    // 1-20    .slice(0,20);   1
+    // 21-40   .slice(20,40);  2
+    // 41-60   .slice(40,60);  3
+    setProducts(filteredProducts.slice(number*20-20,number*20));
+  }
+
   return ( 
   <div>
-
     <Carousel>
       { images.map( element => <Carousel.Item key={element.src}>
         <img
@@ -141,8 +146,6 @@ function HomePage() {
         </Carousel.Caption>
       </Carousel.Item> )}
     </Carousel>
-
-
     <ToastContainer />
     {isLoading === true && <Spinner />}
     <div 
@@ -157,17 +160,14 @@ function HomePage() {
       onClick={() => filterByCategory(element)}>
         {element}
       </div>) }
-    <DropdownButton id="dropdown-basic-button" title="Sorteeri ">
-        <Dropdown.Item onClick={sortAZ}>A - Z</Dropdown.Item>
-        <Dropdown.Item onClick={sortZA}>Z - A</Dropdown.Item>
-        <Dropdown.Item onClick={sortPriceAsc}>
-          Kasvav hind
-        </Dropdown.Item>
-        <Dropdown.Item onClick={sortPriceDesc}>
-          Kahanev hind
-        </Dropdown.Item>
-      </DropdownButton>
-    <div>Tooteid on {products.length} tükki</div>
+
+   <SortDropdown
+        filteredProducts={filteredProducts}
+        updateProducts={setProducts}
+        updatePage={setActivePage}
+   />
+
+    <div>Tooteid on {filteredProducts.length} tükki</div>
     {products.map(element => 
       <div key={element.id}>
         <img src={element.image} alt="" />
@@ -176,6 +176,12 @@ function HomePage() {
         {/* punane: variant="danger" kollane: variant="warning"  hall: variant="secondary" */}
         <Button variant="success" onClick={() => addToCart(element)}>Lisa ostukorvi</Button>
       </div>)}
+
+      <Pagination>{pages.map(number => 
+        <Pagination.Item onClick={() => changePage(number)} key={number} active={number === activePage}>
+          {number}
+        </Pagination.Item>)}
+      </Pagination>
   </div> );
 }
 

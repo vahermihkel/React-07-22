@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import FileUpload from "../../components/FileUpload";
 
 function AddProduct() {
   const idRef = useRef();
@@ -7,15 +8,16 @@ function AddProduct() {
   const priceRef = useRef();
   const descriptionRef = useRef();
   const categoryRef = useRef();
-  const imageRef = useRef();
+  // const imageRef = useRef();
   const activeRef = useRef();
   const [idUnique, setIdUnique] = useState(true);
   const productsDb = "https://react722-default-rtdb.europe-west1.firebasedatabase.app/products.json";
   const [products, setProducts] = useState([]);
-
   const [categories, setCategories] = useState([]);
   const categoriesDb = "https://react722-default-rtdb.europe-west1.firebasedatabase.app/categories.json";
   const navigate = useNavigate(); // <- import kui vaadate varasemaid tutoriale, siis võite näha useHistory   .push()
+  const [message, setMessage] = useState("");
+  const [image, setImage] = useState("");
 
   useEffect(() => {
     fetch(productsDb)
@@ -28,20 +30,7 @@ function AddProduct() {
     .then(data => setCategories(data || [])); 
   }, []);
 
-  const [message, setMessage] = useState("");
-  //const [idMessage, setIdMessage] = useState("");
-  //const [nameMessage, setNameMessage] = useState("");
-  //const [descriptionMessage, setDescriptionMessage] = useState("");
-
-  const add = () => {
-    // kui vasakul pool on väär (false), võta parem pool
-    
-    // koodi efektiivsuse mõttes, 
-    // võiks panna vasakule poole kõik suurema tõenäosusega true olev või kõige lihtsamini leitav true
-    // if (idRef.current.value === "" || nameRef.current.value === "" || descriptionRef.current.value === "") {
-    //   setMessage("Nõutud väljad on täitmata");
-    //   return;                           // return lõpetab funktsiooni
-    // }                                    // cart.jsx sees pani numbri HTMLi sisse
+  const add = () => {                                // cart.jsx sees pani numbri HTMLi sisse
     if (idRef.current.value === "") {
       setMessage("ID on täitmata");   // setIdMessage("Id on täitmata")
       return;                         // korjake kõik returnid ära
@@ -58,15 +47,10 @@ function AddProduct() {
       setMessage("Kirjeldus on täitmata"); // setDescriptionMessage("Kirjeldus on täitmata")
       return;                              // korjake kõik returnid ära
     }  
-    if (imageRef.current.value === "") {
-      setMessage("Pildi aadress on täitmata"); // setImageMessage("Kirjeldus on täitmata")
-      return;                              // korjake kõik returnid ära
-    }  
-
-    //        true
-    // if (!(idRef.current.value === "" || nameRef.current.value === "" || descriptionRef.current.value === "")) {
-    //     //  alumine kood siia sisse
-    // } 
+    // if (imageRef.current.value === "") {
+    //   setMessage("Pildi aadress on täitmata"); // setImageMessage("Kirjeldus on täitmata")
+    //   return;                              // korjake kõik returnid ära
+    // }  
 
     const newProduct = {
       id: Number(idRef.current.value), // 0
@@ -74,12 +58,10 @@ function AddProduct() {
       price: Number(priceRef.current.value), // 0
       description: descriptionRef.current.value, // ""
       category: categoryRef.current.value, // gold
-      image: imageRef.current.value, // ""
+      image: image, // ""
       active: activeRef.current.checked // 0
     }
     products.push(newProduct);
-    // LISAMINE PEAKS KÄIMA API PÄRINGU KAUDU
-    // PUT / POST ---> saavad rakendused (localhost:3000) ja POSTMAN
     fetch(productsDb,{
       method: "PUT", // pannakse midagi sinna API otspunktile
       body: JSON.stringify(products), // mida pannakse
@@ -89,27 +71,18 @@ function AddProduct() {
     }).then(() => navigate("/admin/halda-tooteid"))
   }
 
-
   const checkIdUniqueness = () => {
-    //const ELEMENT = [].find(element => TRUE)
-    //const JÄRJEKORRANUMBER = [].findIndex(element => TRUE)
-                                                  //      29853242 === 29853242
     const index = products.findIndex(element => Number(element.id) === Number(idRef.current.value));
     if (index === -1) {
-      // console.log("unikaalne");
       setIdUnique(true);
     } else {
-      // console.log("mitteunikaalne");
       setIdUnique(false);
     }
   }
 
   return ( 
     <div>
-      {/* { !idUnique && <div>Sisestasid mitteunikaalse ID!</div>} */}
       <div>{message}</div>
-      {/* <div>{idMessage}</div>
-      <div>{nameMessage}</div> */}
       { idUnique === false && <div>Sisestasid mitteunikaalse ID!</div>}
       <label>ID</label> <br />
       <input onChange={checkIdUniqueness} ref={idRef} type="number" /> <br />
@@ -125,7 +98,8 @@ function AddProduct() {
         {categories.map(element => <option key={element.id + element.name}>{element.name}</option>)}
       </select> <br />
       <label>Pilt</label> <br />
-      <input ref={imageRef} type="text" /> <br />
+      {/* <input ref={imageRef} type="text" /> <br /> */}
+      <FileUpload onSendPictureUrl={setImage} />
       <label>Aktiivne</label> <br />
       <input ref={activeRef} type="checkbox" /> <br />
       <button disabled={idUnique === false} onClick={add}>Lisa</button>
