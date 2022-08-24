@@ -12,6 +12,13 @@ function ParcelMachine() {
         const result = (data || []).filter(element => element.A0_NAME === "EE");
         setParcelMachines(result);
       }) // saan body tagastuse (peab olema [] või {})
+
+    fetch("https://www.omniva.ee/locations.json") // aadress kuhu teen api päringu
+      .then(res => res.json()) // saan terviktagastuse, kus on staatuskood jne
+      .then(data => {
+        const result = (data || []).filter(element => element.A0_NAME === "EE");
+        setParcelMachines(result);
+      })
   }, []);
 
   const selectPM = () => {
