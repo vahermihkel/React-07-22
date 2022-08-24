@@ -14,6 +14,7 @@ import MaintainCategories from './pages/admin/MaintainCategories';
 import NavigationBar from './components/NavigationBar';
 import NotFound from './pages/NotFound';
 import PaymentCompleted from './pages/PaymentCompleted';
+import SignIn from './pages/SignIn';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="poed" exact element={ <Shops /> } />
         <Route path="ostukorv" exact element={ <Cart /> } />
         <Route path="tellimus" exact element={ <PaymentCompleted /> } />
+        <Route path="logi-sisse" exact element={ <SignIn /> } />
         <Route path="toode/:productId" exact element={ <SingleProduct /> } />
         <Route path="admin" exact element={ <AdminHome /> } />
         <Route path="admin/lisa-toode" exact element={ <AddProduct /> } />

@@ -2,6 +2,7 @@ import { useState } from "react";
 import ParcelMachine from "../components/cart/ParcelMachine";
 import Payment from "../components/cart/Payment";
 import styles from '../css/Cart.module.css';
+import { cartSumService } from '../store/cartSumService';
 
 function Cart() {
   const [cart, setCart] = useState(JSON.parse(sessionStorage.getItem("cart")) || []);
@@ -13,18 +14,22 @@ function Cart() {
     }
     setCart(cart.slice());
     sessionStorage.setItem("cart", JSON.stringify(cart));
+    cartSumService.sendCartSum(calculateCartSum());
   }
 
   const increaseQuantity = (index) => {
     cart[index].quantity = cart[index].quantity + 1; // võtab varasema koguse ja liidab ühe juurde
     setCart(cart.slice());
     sessionStorage.setItem("cart", JSON.stringify(cart));
+    cartSumService.sendCartSum(calculateCartSum());
+
   }
 
   const removeFromCart = (index) => {
     cart.splice(index,1);
     setCart(cart.slice());
     sessionStorage.setItem("cart", JSON.stringify(cart));
+    cartSumService.sendCartSum(calculateCartSum());
   }
 
   const calculateCartSum = () => {
@@ -39,7 +44,7 @@ function Cart() {
     <button>Kodus: tühjenda</button>
 
     {cart.map((element, index) => 
-      <div className={styles.product} key={element.id}>
+      <div className={styles.product} key={element.product.id}>
         <img className={styles.image} src={element.product.image} alt="" />
         <div className={styles.name}>{element.product.name}</div>
         <div className={styles.price}>{Number(element.product.price).toFixed(2)} €</div>

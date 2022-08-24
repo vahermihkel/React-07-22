@@ -1,5 +1,7 @@
 import { Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { cartSumService } from '../../store/cartSumService';
 
 function Product(props) {
 
@@ -19,13 +21,7 @@ function Product(props) {
         cart.splice(index,1);
       }
 
-      cart = JSON.stringify(cart);
-      sessionStorage.setItem("cart",cart);
-      toast.success('Edukalt ostukorvist eemaldatud!', {
-        position: "bottom-right",
-        autoClose: 3000,
-        theme: "dark"
-        });
+      saveCart(cart, 'Edukalt ostukorvist eemaldatud!');
     } 
   }
 
@@ -42,21 +38,32 @@ function Product(props) {
     } else {
       cart.push({product: productClicked, quantity: 1});
     }
+
+    saveCart(cart, "Edukalt ostukorvi lisatud");
+  }
+
+  const saveCart = (cart, message) => {
+    let cartSum = 0;
+    cart.forEach(element => cartSum = cartSum + element.product.price * element.quantity )
+    cartSumService.sendCartSum(cartSum);
+
     cart = JSON.stringify(cart);
     sessionStorage.setItem("cart",cart);
-    toast.success('Edukalt ostukorvi lisatud!', {
+
+    toast.success(message, {
       position: "bottom-right",
       autoClose: 3000,
       theme: "dark"
       });
   }
 
-
   return ( 
-    <div key={props.element.id}>
-      <img src={props.element.image} alt="" />
-      <div>{props.element.name}</div>
-      <div>{props.element.price}</div>
+    <div>
+      <Link to={"/toode/" + props.element.id}>
+        <img src={props.element.image} alt="" />
+        <div>{props.element.name}</div>
+        <div>{props.element.price}</div>
+      </Link>
       {/* punane: variant="danger" kollane: variant="warning"  hall: variant="secondary" */}
       <Button 
         disabled={props.element.count === 0} 

@@ -72,6 +72,7 @@ function HomePage() {
         <Product 
         // parempoolne on siit failist
         // vasakpoolne vastuvõtvast failist props. järel olev võti
+          key={element.id}
           element={element} 
           products={products}
           setProducts={setProducts}
