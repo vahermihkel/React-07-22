@@ -1,0 +1,10 @@
+{
+  "navbar.admin-button": "To admin view",
+  "navbar.about-button": "About us",
+  "navbar.shops-button": "Our shops",
+  "navbar.cart-button": "Cart",
+  "form.email": "Email",
+  "INVALID_EMAIL": "Invalid email",
+  "MISSING_PASSWORD": "Missing password",
+  "WEAK_PASSWORD : Password should be at least 6 characters": "Password should be at least 6 characters"
+}

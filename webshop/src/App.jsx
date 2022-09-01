@@ -7,6 +7,7 @@ import Cart from './pages/Cart';
 import SingleProduct from './pages/SingleProduct';
 import AdminHome from './pages/admin/AdminHome';
 import AddProduct from './pages/admin/AddProduct';
+import AddUser from './pages/admin/AddUser';
 import EditProduct from './pages/admin/EditProduct';
 import MaintainProducts from './pages/admin/MaintainProducts';
 import MaintainShops from './pages/admin/MaintainShops';
@@ -30,6 +31,7 @@ function App() {
         <Route path="logi-sisse" exact element={ <SignIn /> } />
         <Route path="toode/:productId" exact element={ <SingleProduct /> } />
         <Route path="admin" exact element={ <AdminHome /> } />
+        <Route path="admin/lisa-kasutajaid" exact element={ <AddUser /> } />
         <Route path="admin/lisa-toode" exact element={ <AddProduct /> } />
         <Route path="admin/muuda/:id" exact element={ <EditProduct /> } />
         <Route path="admin/halda-tooteid" exact element={ <MaintainProducts /> } />

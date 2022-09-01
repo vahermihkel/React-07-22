@@ -1,11 +1,41 @@
+import { useContext } from "react";
 import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import AuthContext from '../store/AuthContext';
 
 function SignIn() {
   const emailRef = useRef();
   const passwordRef = useRef();
+  const firebaseUrl = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAuq0N9OjcweHN-TaUPT3efo-LL5EVQiHA"
+  const navigate = useNavigate();
+  const authCtx = useContext(AuthContext);
 
   const login = () => {
-      // FIREBASE AUTHENTICATION
+    const data = {
+      email: emailRef.current.value,
+      password: passwordRef.current.value,
+      returnSecureToken: true
+    }
+    fetch(firebaseUrl,{
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(res => res.json()) // body+headers+http status code+time
+      .then(body => {
+        if (body.registered) {
+          let today = new Date(); // uus tänane kuupäev praeguse kellaajaga
+          let expirationDate = new Date(today.getTime()+body.expiresIn*1000);
+          const userData = {
+            token: body.idToken,
+            expires: expirationDate
+          }
+          sessionStorage.setItem("userData", JSON.stringify(userData));
+          authCtx.login();
+          navigate("/admin");
+        }
+      });
   }
 
   return ( <div>

@@ -3,9 +3,12 @@ import { Container, Nav, Navbar } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { cartSumService } from '../store/cartSumService';
 import { useState } from 'react';
+import { useContext } from 'react';
+import AuthContext from '../store/AuthContext';
 
 function NavigationBar() {
   const { t, i18n } = useTranslation();
+  const authCtx = useContext(AuthContext);
 
   const calculateCartSum = () => {
     let cart = sessionStorage.getItem("cart");
@@ -24,6 +27,11 @@ function NavigationBar() {
 
   cartSumService.getCartSum().subscribe(newCartSum => setCartSum(newCartSum));
 
+  const logout = () => {
+    // globaalne muutuja false-ks
+    authCtx.logout();
+  }
+
   return ( 
     <Navbar bg="light" variant="light">
       <Container>
@@ -33,6 +41,9 @@ function NavigationBar() {
           <Nav.Link as={Link} to="/meist">{t('navbar.about-button')}</Nav.Link>
           <Nav.Link as={Link} to="/poed">{t('navbar.shops-button')}</Nav.Link>
           <Nav.Link as={Link} to="/ostukorv">{t('navbar.cart-button')}</Nav.Link>
+          { authCtx.loggedIn === false && <Nav.Link as={Link} to="/logi-sisse">Logi sisse</Nav.Link>}
+          { authCtx.loggedIn === true && <Nav.Link onClick={logout}>Logi välja</Nav.Link>}
+
         </Nav>
       </Container>
       <div>{cartSum.toFixed(2)} €</div>
