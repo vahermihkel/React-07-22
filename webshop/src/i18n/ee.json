@@ -6,5 +6,8 @@
   "form.email": "E-mail",
   "INVALID_EMAIL": "Vigane email",
   "MISSING_PASSWORD": "Parool puudub",
-  "WEAK_PASSWORD : Password should be at least 6 characters": "Parool peab olema vähemalt 6 tähte"
+  "WEAK_PASSWORD : Password should be at least 6 characters": "Parool peab olema vähemalt 6 tähte",
+  "EMAIL_EXISTS": "E-mailiga on juba kasutaja tehtud",
+  "EMAIL_NOT_FOUND": "Sellise e-mailiga kasutajat ei leitud",
+  "INVALID_PASSWORD": "Sisestasid vale parooli"
 }

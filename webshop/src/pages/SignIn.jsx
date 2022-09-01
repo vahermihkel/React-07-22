@@ -1,7 +1,8 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from '../store/AuthContext';
+import { useTranslation } from 'react-i18next'; // <---
 
 function SignIn() {
   const emailRef = useRef();
@@ -9,6 +10,8 @@ function SignIn() {
   const firebaseUrl = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAuq0N9OjcweHN-TaUPT3efo-LL5EVQiHA"
   const navigate = useNavigate();
   const authCtx = useContext(AuthContext);
+  const [message, setMessage] = useState(""); // <---
+  const { t } = useTranslation(); // <---
 
   const login = () => {
     const data = {
@@ -24,6 +27,9 @@ function SignIn() {
       }
     }).then(res => res.json()) // body+headers+http status code+time
       .then(body => {
+        if (body.error) {
+          setMessage(t(body.error.message));  
+        } 
         if (body.registered) {
           let today = new Date(); // uus tänane kuupäev praeguse kellaajaga
           let expirationDate = new Date(today.getTime()+body.expiresIn*1000);
@@ -38,7 +44,9 @@ function SignIn() {
       });
   }
 
-  return ( <div>
+  return ( 
+  <div>
+    <div>{message}</div>
     <label>Email</label> <br />
     <input ref={emailRef} type="text" /> <br />
     <label>Parool</label> <br />

@@ -1,11 +1,14 @@
+import { useContext } from "react";
 import { useState } from "react";
 import ParcelMachine from "../components/cart/ParcelMachine";
 import Payment from "../components/cart/Payment";
 import styles from '../css/Cart.module.css';
-import { cartSumService } from '../store/cartSumService';
+import CartSumContext from "../store/CartSumContext";
+// import { cartSumService } from '../store/cartSumService';
 
 function Cart() {
   const [cart, setCart] = useState(JSON.parse(sessionStorage.getItem("cart")) || []);
+  const cartSumCtx = useContext(CartSumContext);
 
   const decreaseQuantity = (index) => {
     cart[index].quantity = cart[index].quantity - 1;
@@ -14,22 +17,24 @@ function Cart() {
     }
     setCart(cart.slice());
     sessionStorage.setItem("cart", JSON.stringify(cart));
-    cartSumService.sendCartSum(calculateCartSum());
+    // cartSumService.sendCartSum(calculateCartSum());
+    cartSumCtx.setCartSum(calculateCartSum());
   }
 
   const increaseQuantity = (index) => {
     cart[index].quantity = cart[index].quantity + 1; // võtab varasema koguse ja liidab ühe juurde
     setCart(cart.slice());
     sessionStorage.setItem("cart", JSON.stringify(cart));
-    cartSumService.sendCartSum(calculateCartSum());
-
+    // cartSumService.sendCartSum(calculateCartSum());
+    cartSumCtx.setCartSum(calculateCartSum());
   }
 
   const removeFromCart = (index) => {
     cart.splice(index,1);
     setCart(cart.slice());
     sessionStorage.setItem("cart", JSON.stringify(cart));
-    cartSumService.sendCartSum(calculateCartSum());
+    // cartSumService.sendCartSum(calculateCartSum());
+    cartSumCtx.setCartSum(calculateCartSum());
   }
 
   const calculateCartSum = () => {

@@ -35,6 +35,8 @@ function AddUser() {
             theme: "dark",
             autoClose: 3000,
           });
+          emailRef.current.value = "";
+          passwordRef.current.value = "";
         }
       });
   }

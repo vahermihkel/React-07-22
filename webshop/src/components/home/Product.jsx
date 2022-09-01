@@ -1,9 +1,12 @@
+import { useContext } from 'react';
 import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { cartSumService } from '../../store/cartSumService';
+import CartSumContext from '../../store/CartSumContext';
+// import { cartSumService } from '../../store/cartSumService';
 
 function Product(props) {
+  const cartSumCtx = useContext(CartSumContext);
 
   const removeFromCart = (productClicked) => {
     const productIndex = props.products.indexOf(productClicked);
@@ -45,7 +48,8 @@ function Product(props) {
   const saveCart = (cart, message) => {
     let cartSum = 0;
     cart.forEach(element => cartSum = cartSum + element.product.price * element.quantity )
-    cartSumService.sendCartSum(cartSum);
+    // cartSumService.sendCartSum(cartSum);
+    cartSumCtx.setCartSum(cartSum);
 
     cart = JSON.stringify(cart);
     sessionStorage.setItem("cart",cart);
