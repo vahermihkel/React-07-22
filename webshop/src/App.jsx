@@ -18,8 +18,10 @@ import PaymentCompleted from './pages/PaymentCompleted';
 import SignIn from './pages/SignIn';
 import { useContext } from 'react';
 import AuthContext from './store/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 function App() {
+  const { t } = useTranslation();
 
   const authCtx = useContext(AuthContext);
 
@@ -29,9 +31,9 @@ function App() {
       <Routes>
         {/* 11tk 6tk self-closing tag -- img, input, route */}
         <Route path="" exact element={ <HomePage /> } />
-        <Route path="meist" exact element={ <AboutUs /> } />
-        <Route path="poed" exact element={ <Shops /> } />
-        <Route path="ostukorv" exact element={ <Cart /> } />
+        <Route path={t("url.about")} exact element={ <AboutUs /> } />
+        <Route path={t("url.shops")} exact element={ <Shops /> } />
+        <Route path={t("url.cart")} exact element={ <Cart /> } />
         <Route path="tellimus" exact element={ <PaymentCompleted /> } />
         <Route path="logi-sisse" exact element={ <SignIn /> } />
         <Route path="toode/:productId" exact element={ <SingleProduct /> } />

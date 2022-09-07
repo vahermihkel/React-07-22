@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useContext } from 'react';
@@ -11,6 +11,7 @@ function NavigationBar() {
   const { t, i18n } = useTranslation();
   const authCtx = useContext(AuthContext);
   const cartSumCtx = useContext(CartSumContext);
+  const navigate = useNavigate();
   // const calculateCartSum = () => {
   //   let cart = sessionStorage.getItem("cart");
   //   cart = JSON.parse(cart) || [];
@@ -24,6 +25,7 @@ function NavigationBar() {
   const changeWebsiteLanguage = (language) => {
     i18n.changeLanguage(language);
     localStorage.setItem("language", language);
+    navigate("/");
   }
 
   // cartSumService.getCartSum().subscribe(newCartSum => setCartSum(newCartSum));
@@ -39,9 +41,9 @@ function NavigationBar() {
         <Navbar.Brand as={Link} to="/">Webshop</Navbar.Brand>
         <Nav className="me-auto">
           { authCtx.loggedIn === true && <Nav.Link as={Link} to="/admin">{t('navbar.admin-button')}</Nav.Link>}
-          <Nav.Link as={Link} to="/meist">{t('navbar.about-button')}</Nav.Link>
-          <Nav.Link as={Link} to="/poed">{t('navbar.shops-button')}</Nav.Link>
-          <Nav.Link as={Link} to="/ostukorv">{t('navbar.cart-button')}</Nav.Link>
+          <Nav.Link as={Link} to={"/"+t("url.about")}>{t('navbar.about-button')}</Nav.Link>
+          <Nav.Link as={Link} to={"/"+t("url.shops")}>{t('navbar.shops-button')}</Nav.Link>
+          <Nav.Link as={Link} to={"/"+t("url.cart")}>{t('navbar.cart-button')}</Nav.Link>
           { authCtx.loggedIn === false && <Nav.Link as={Link} to="/logi-sisse">Logi sisse</Nav.Link>}
           { authCtx.loggedIn === true && <Nav.Link onClick={logout}>Logi välja</Nav.Link>}
 

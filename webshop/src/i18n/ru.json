@@ -9,5 +9,8 @@
   "WEAK_PASSWORD : Password should be at least 6 characters": "Parool peab olema vähemalt 6 tähte RU",
   "EMAIL_EXISTS": "E-mailiga on juba kasutaja tehtud RU",
   "EMAIL_NOT_FOUND": "Sellise e-mailiga kasutajat ei leitud RU",
-  "INVALID_PASSWORD": "Sisestasid vale parooli RU"
+  "INVALID_PASSWORD": "Sisestasid vale parooli RU",
+  "url.about": "o-nas",
+  "url.shops": "nashi-magaziny",
+  "url.cart": "korzina"
 }

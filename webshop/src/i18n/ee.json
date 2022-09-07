@@ -9,5 +9,8 @@
   "WEAK_PASSWORD : Password should be at least 6 characters": "Parool peab olema vähemalt 6 tähte",
   "EMAIL_EXISTS": "E-mailiga on juba kasutaja tehtud",
   "EMAIL_NOT_FOUND": "Sellise e-mailiga kasutajat ei leitud",
-  "INVALID_PASSWORD": "Sisestasid vale parooli"
+  "INVALID_PASSWORD": "Sisestasid vale parooli",
+  "url.about": "meist",
+  "url.shops": "poed",
+  "url.cart": "ostukorv"
 }
